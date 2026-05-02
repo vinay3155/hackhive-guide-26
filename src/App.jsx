@@ -383,7 +383,7 @@ export default function App() {
 
       {/* ── FOOTER ── */}
       <div style={{ textAlign: 'center', padding: '2rem 1rem', fontSize: '12px', color: 'var(--ink3)', letterSpacing: '0.05em' }}>
-        designed by vinay
+      CRAFTED WITH <span role="img" aria-label="love">❤️</span> by the VINAY BODRAVLA
       </div>
     </>
   );
