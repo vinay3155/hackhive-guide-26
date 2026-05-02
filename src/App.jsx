@@ -232,7 +232,7 @@ export default function App() {
         {/* INTERACTIVE ACTIONS */}
         <div style={{ marginTop: '1rem', marginBottom: '2rem' }}>
           {!status.checkedIn ? (
-            <button onClick={handleCheckIn} style={{ background: '#4ADE80', color: '#15803D', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button onClick={handleCheckIn} style={{ background: '#4ADE80', color: '#000000', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               📍 I've Entered the College
             </button>
           ) : (
