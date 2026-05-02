@@ -170,6 +170,7 @@ app.post('/api/feedback', async (req, res) => {
 app.get('/api/organizer/stats', async (req, res) => {
   try {
     const allParticipants = await Participant.find({});
+    const feedbacks = await Feedback.find({}).sort({ timestamp: -1 });
     
     const hwCheckedIn = allParticipants.filter(p => p.checkedIn && p.track === 'hardware').length;
     const swCheckedIn = allParticipants.filter(p => p.checkedIn && p.track === 'software').length;
@@ -182,12 +183,22 @@ app.get('/api/organizer/stats', async (req, res) => {
     // Active SOS Alerts
     const sosAlerts = allParticipants.filter(p => p.sosRequest !== null && p.sosRequest.type); // ensure type exists
 
+    const allTeams = allParticipants.map(p => ({
+      id: p.id,
+      teamName: p.teamName,
+      phone: p.phone,
+      track: p.track,
+      checkedIn: p.checkedIn
+    }));
+
     res.json({
       hwCheckedIn,
       swCheckedIn,
       pendingExits,
       processedExits,
-      sosAlerts
+      sosAlerts,
+      allTeams,
+      feedbacks
     });
   } catch (err) {
     console.error(err);

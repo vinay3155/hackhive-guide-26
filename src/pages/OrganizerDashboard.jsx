@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../index.css';
 
 export default function OrganizerDashboard() {
-  const [stats, setStats] = useState({ hwCheckedIn: 0, swCheckedIn: 0, pendingExits: [], processedExits: [], sosAlerts: [] });
+  const [stats, setStats] = useState({ hwCheckedIn: 0, swCheckedIn: 0, pendingExits: [], processedExits: [], sosAlerts: [], allTeams: [], feedbacks: [] });
 
   const fetchStats = async () => {
     try {
@@ -134,6 +134,75 @@ export default function OrganizerDashboard() {
           ))}
         </div>
       )}
+
+      {/* FEEDBACK & RATINGS */}
+      <h2 style={{ fontSize: '20px', marginBottom: '1rem', marginTop: '2rem' }}>⭐ Participant Feedback</h2>
+      {stats.feedbacks && stats.feedbacks.length === 0 ? (
+        <p style={{ color: 'var(--ink3)' }}>No feedback submitted yet.</p>
+      ) : (
+        <div style={{ display: 'grid', gap: '1rem' }}>
+          {stats.feedbacks?.map(fb => (
+            <div key={fb._id || fb.timestamp} style={{ background: '#fff', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--rule)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <strong style={{ fontSize: '16px' }}>{fb.teamName}</strong>
+                <span style={{ color: '#F59E0B', fontSize: '16px', fontWeight: 'bold', letterSpacing: '2px' }}>
+                  {'★'.repeat(fb.rating)}{'☆'.repeat(5 - fb.rating)}
+                </span>
+              </div>
+              <div style={{ fontSize: '14px', color: 'var(--ink2)', background: 'var(--bg)', padding: '10px', borderRadius: '8px' }}>
+                {fb.feedbackText || <em style={{ color: 'var(--ink3)' }}>No written feedback provided.</em>}
+              </div>
+              <div style={{ fontSize: '11px', color: 'var(--ink3)', marginTop: '8px' }}>
+                {new Date(fb.timestamp).toLocaleString()}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* REGISTERED TEAMS */}
+      <h2 style={{ fontSize: '20px', marginBottom: '1rem', marginTop: '3rem' }}>👥 All Registered Teams</h2>
+      <div style={{ overflowX: 'auto', background: '#fff', borderRadius: '12px', border: '1px solid var(--rule)' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <thead>
+            <tr style={{ background: 'var(--bg)', borderBottom: '2px solid var(--rule)' }}>
+              <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Team Name</th>
+              <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Track</th>
+              <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Phone Number</th>
+              <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats.allTeams && stats.allTeams.map(team => (
+              <tr key={team.id} style={{ borderBottom: '1px solid var(--rule)' }}>
+                <td style={{ padding: '12px 16px', fontWeight: 'bold', fontSize: '14px' }}>{team.teamName}</td>
+                <td style={{ padding: '12px 16px' }}>
+                  <span style={{ 
+                    padding: '4px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase',
+                    background: team.track === 'hardware' ? 'var(--hw-bg)' : 'var(--sw-bg)',
+                    color: team.track === 'hardware' ? 'var(--hw)' : 'var(--sw)'
+                  }}>
+                    {team.track}
+                  </span>
+                </td>
+                <td style={{ padding: '12px 16px', fontSize: '14px', color: 'var(--ink2)' }}>{team.phone}</td>
+                <td style={{ padding: '12px 16px' }}>
+                  {team.checkedIn ? (
+                    <span style={{ color: '#15803D', fontWeight: 'bold', fontSize: '13px' }}>✅ Checked In</span>
+                  ) : (
+                    <span style={{ color: 'var(--ink3)', fontSize: '13px' }}>Waiting...</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {(!stats.allTeams || stats.allTeams.length === 0) && (
+              <tr>
+                <td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: 'var(--ink3)' }}>No teams registered yet.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
       
       <style>{`
         @keyframes pulse {
