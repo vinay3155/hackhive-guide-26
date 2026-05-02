@@ -34,7 +34,7 @@ export default function Challenges({ track, challengesReleased, selectedChalleng
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>🛠️</div>
         <h3 style={{ fontSize: '20px', color: 'var(--ink)', marginBottom: '8px' }}>Hardware Track</h3>
         <p style={{ color: 'var(--ink3)', fontSize: '14px', lineHeight: '1.6' }}>
-          These problem statements are specifically for the Software Track. Hardware teams have an open innovation theme! Please proceed to your designated lab area to begin building.
+          These problem statements are already released and available for all hardware teams. Please refer to the registration website or contact the organizers for more details on the specific challenges and requirements.
         </p>
       </div>
     );

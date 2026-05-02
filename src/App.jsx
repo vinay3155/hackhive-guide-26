@@ -8,8 +8,8 @@ import Feedback from './components/sections/Feedback';
 import OrganizerDashboard from './pages/OrganizerDashboard';
 import './index.css';
 
-const START = new Date('2026-05-06T08:00:00');
-const END   = new Date('2026-05-07T08:00:00');
+const START = new Date('2026-05-06T11:00:00');
+const END   = new Date('2026-05-07T11:00:00');
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -194,7 +194,7 @@ export default function App() {
             </div>
           </div>
 
-          <button type="submit" style={{ width: '100%', background: '#4ADE80', color: '#15803D', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
+          <button type="submit" style={{ width: '100%', background: '#4ADE80', color: '#000000', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
             Register Device
           </button>
         </form>

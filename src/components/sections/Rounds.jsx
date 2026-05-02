@@ -24,7 +24,7 @@ export default function Rounds({ now }) {
         <div className="round-header">
           <div className="round-num">1</div>
           <div>
-            <div className="round-title">Round 1 — Kickoff & Prototype</div>
+            <div className="round-title">Round 1 — Idea pitch  </div>
             <div className="round-time">May 6 · 9:00 AM – 2:00 PM</div>
           </div>
           <div className={`round-status ${r1.class}`}>{r1.label}</div>
