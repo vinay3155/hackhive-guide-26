@@ -382,9 +382,50 @@ export default function App() {
       </div>
 
       {/* ── FOOTER ── */}
-      <div style={{ textAlign: 'center', padding: '2rem 1rem', fontSize: '12px', color: 'var(--ink3)', letterSpacing: '0.05em' }}>
-      CRAFTED WITH <span role="img" aria-label="love">❤️</span> by the VINAY BODRAVLA
-      </div>
+      <footer style={{ 
+        marginTop: '3rem', 
+        padding: '2rem 1.5rem', 
+        background: 'var(--bg)', 
+        borderTop: '1px solid var(--rule)',
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        borderRadius: '16px 16px 0 0'
+      }}>
+        {/* Left Side: Instagram */}
+        <a 
+          href="https://www.instagram.com/aitm_hackhive?igsh=MTZqNmMyZjNtaTdjaw==" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            textDecoration: 'none', 
+            color: 'var(--ink)',
+            padding: '8px 12px',
+            background: '#fff',
+            border: '1px solid var(--rule)',
+            borderRadius: '12px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+          }}
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#E1306C' }}>
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <span style={{ fontWeight: 'bold', fontSize: '13px' }}>@aitm_hackhive</span>
+        </a>
+
+        {/* Right Side: Credits */}
+        <div style={{ textAlign: 'right', fontSize: '11px', color: 'var(--ink3)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+          <div style={{ fontWeight: 'bold', color: 'var(--ink2)' }}>© 2026 HackHive AITM</div>
+          <div style={{ marginTop: '4px' }}>CRAFTED WITH ❤️ BY VINAY BODRAVLA</div>
+        </div>
+      </footer>
     </>
   );
 }
