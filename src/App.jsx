@@ -423,7 +423,7 @@ export default function App() {
         {/* Right Side: Credits */}
         <div style={{ textAlign: 'right', fontSize: '11px', color: 'var(--ink3)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
           <div style={{ fontWeight: 'bold', color: 'var(--ink2)' }}>© 2026 HackHive AITM</div>
-          <div style={{ marginTop: '4px' }}>CRAFTED WITH ❤️ BY VINAY BODRAVLA</div>
+          <div style={{ marginTop: '4px' }}>designed by vinay</div>
         </div>
       </footer>
     </>
