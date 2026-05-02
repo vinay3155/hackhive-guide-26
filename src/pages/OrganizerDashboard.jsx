@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../index.css';
 
 export default function OrganizerDashboard() {
-  const [stats, setStats] = useState({ hwCheckedIn: 0, swCheckedIn: 0, pendingExits: [], processedExits: [], sosAlerts: [], allTeams: [], feedbacks: [] });
+  const [stats, setStats] = useState({ hwCheckedIn: 0, swCheckedIn: 0, pendingExits: [], processedExits: [], sosAlerts: [], allTeams: [], feedbacks: [], challengesReleased: false });
 
   const fetchStats = async () => {
     try {
@@ -46,11 +46,45 @@ export default function OrganizerDashboard() {
     }
   };
 
+  const handleToggleChallenges = async (released) => {
+    const pwd = window.prompt("Enter Admin Password to change Problem Statement status:");
+    if (!pwd) return;
+    try {
+      const res = await fetch('/api/organizer/toggle-challenges', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd, released })
+      });
+      const data = await res.json();
+      if (!res.ok) alert(data.error);
+      fetchStats();
+    } catch (err) {
+      console.error(err);
+      alert('Server error.');
+    }
+  };
+
   return (
     <div style={{ padding: '2rem', minHeight: '100vh', background: 'var(--bg)', color: 'var(--ink)' }}>
-      <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '48px', marginBottom: '1rem' }}>
-        Organizer <span style={{ color: '#4ADE80' }}>Dashboard</span>
-      </h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '48px', margin: 0 }}>
+          Organizer <span style={{ color: '#4ADE80' }}>Dashboard</span>
+        </h1>
+
+        <div style={{ background: '#fff', padding: '12px 20px', borderRadius: '12px', border: '1px solid var(--rule)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div>
+            <div style={{ fontSize: '11px', color: 'var(--ink3)', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' }}>Software Challenges</div>
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: stats.challengesReleased ? '#15803D' : '#DC2626' }}>
+              {stats.challengesReleased ? '🔓 DEPLOYED' : '🔒 LOCKED'}
+            </div>
+          </div>
+          {stats.challengesReleased ? (
+            <button onClick={() => handleToggleChallenges(false)} style={{ background: '#DC2626', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Lock</button>
+          ) : (
+            <button onClick={() => handleToggleChallenges(true)} style={{ background: '#096DD9', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>🚀 DEPLOY</button>
+          )}
+        </div>
+      </div>
 
       {/* SOS ALERTS */}
       {stats.sosAlerts.length > 0 && (
@@ -168,6 +202,7 @@ export default function OrganizerDashboard() {
             <tr style={{ background: 'var(--bg)', borderBottom: '2px solid var(--rule)' }}>
               <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Team Name</th>
               <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Track</th>
+              <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Challenge Selection</th>
               <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Phone Number</th>
               <th style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--ink2)' }}>Status</th>
             </tr>
@@ -185,6 +220,15 @@ export default function OrganizerDashboard() {
                     {team.track}
                   </span>
                 </td>
+                <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 'bold' }}>
+                  {team.track === 'hardware' ? (
+                    <span style={{ color: 'var(--ink3)', fontWeight: 'normal' }}>N/A</span>
+                  ) : team.selectedChallenge ? (
+                    <span style={{ color: '#096DD9' }}>PS-{team.selectedChallenge}</span>
+                  ) : (
+                    <span style={{ color: 'var(--warn)' }}>Pending</span>
+                  )}
+                </td>
                 <td style={{ padding: '12px 16px', fontSize: '14px', color: 'var(--ink2)' }}>{team.phone}</td>
                 <td style={{ padding: '12px 16px' }}>
                   {team.checkedIn ? (
@@ -197,7 +241,7 @@ export default function OrganizerDashboard() {
             ))}
             {(!stats.allTeams || stats.allTeams.length === 0) && (
               <tr>
-                <td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: 'var(--ink3)' }}>No teams registered yet.</td>
+                <td colSpan="5" style={{ padding: '20px', textAlign: 'center', color: 'var(--ink3)' }}>No teams registered yet.</td>
               </tr>
             )}
           </tbody>

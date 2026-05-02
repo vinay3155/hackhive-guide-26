@@ -3,6 +3,7 @@ import WhereToGo from './components/sections/WhereToGo';
 import Schedule from './components/sections/Schedule';
 import Food from './components/sections/Food';
 import Rounds from './components/sections/Rounds';
+import Challenges from './components/sections/Challenges';
 import Feedback from './components/sections/Feedback';
 import OrganizerDashboard from './pages/OrganizerDashboard';
 import './index.css';
@@ -25,7 +26,7 @@ export default function App() {
   const [teamName, setTeamName] = useState('');
   const [phone, setPhone] = useState('');
   const [trackInput, setTrackInput] = useState('hardware');
-  const [status, setStatus] = useState({ checkedIn: false, exitStatus: 'none', track: 'hardware', hasActiveSos: false });
+  const [status, setStatus] = useState({ checkedIn: false, exitStatus: 'none', track: 'hardware', hasActiveSos: false, challengesReleased: false, selectedChallenge: null });
   const [showSosMenu, setShowSosMenu] = useState(false);
   const [showExitForm, setShowExitForm] = useState(false);
   const [exitReason, setExitReason] = useState('');
@@ -364,6 +365,7 @@ export default function App() {
       <div className="tab-nav">
         <button className={`tab-btn ${activeTab === 'where' ? 'active' : ''}`} onClick={() => setActiveTab('where')}>📍 Where to Go</button>
         <button className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`} onClick={() => setActiveTab('schedule')}>📅 Schedule</button>
+        <button className={`tab-btn ${activeTab === 'challenges' ? 'active' : ''}`} onClick={() => setActiveTab('challenges')}>💻 Challenges</button>
         <button className={`tab-btn ${activeTab === 'food' ? 'active' : ''}`} onClick={() => setActiveTab('food')}>🍽 Food</button>
         <button className={`tab-btn ${activeTab === 'rounds' ? 'active' : ''}`} onClick={() => setActiveTab('rounds')}>🏆 Rounds</button>
         <button className={`tab-btn ${activeTab === 'feedback' ? 'active' : ''}`} onClick={() => setActiveTab('feedback')}>⭐ Feedback</button>
@@ -373,6 +375,7 @@ export default function App() {
       <div className="tab-section active">
         {activeTab === 'where' && <WhereToGo track={status.track} />}
         {activeTab === 'schedule' && <Schedule now={now} />}
+        {activeTab === 'challenges' && <Challenges track={status.track} challengesReleased={status.challengesReleased} selectedChallenge={status.selectedChallenge} participantId={participantId} />}
         {activeTab === 'food' && <Food now={now} />}
         {activeTab === 'rounds' && <Rounds now={now} />}
         {activeTab === 'feedback' && <Feedback teamName={teamName} />}

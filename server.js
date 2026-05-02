@@ -29,7 +29,8 @@ const participantSchema = new mongoose.Schema({
   sosRequest: {
     type: { type: String }, // 'mentor' or 'emergency'
     timestamp: Number
-  }
+  },
+  selectedChallenge: { type: Number, default: null }
 });
 const Participant = mongoose.model('Participant', participantSchema);
 
@@ -40,6 +41,12 @@ const feedbackSchema = new mongoose.Schema({
   timestamp: { type: Number, default: () => Date.now() }
 });
 const Feedback = mongoose.model('Feedback', feedbackSchema);
+
+const configSchema = new mongoose.Schema({
+  key: { type: String, required: true, unique: true },
+  value: mongoose.Schema.Types.Mixed
+});
+const Config = mongoose.model('Config', configSchema);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Connected to MongoDB Atlas!'))
@@ -69,7 +76,8 @@ app.post('/api/register', async (req, res) => {
       checkedIn: false,
       exitStatus: 'none',
       exitReason: '',
-      sosRequest: null
+      sosRequest: null,
+      selectedChallenge: null
     });
 
     res.json({ id, message: 'Registration successful' });
@@ -132,11 +140,16 @@ app.get('/api/status/:id', async (req, res) => {
     const p = await Participant.findOne({ id });
     if (!p) return res.status(404).json({ error: 'Participant not found.' });
 
+    let conf = await Config.findOne({ key: 'challengesReleased' });
+    let challengesReleased = conf ? conf.value : false;
+
     res.json({
       checkedIn: p.checkedIn,
       exitStatus: p.exitStatus,
       track: p.track,
-      hasActiveSos: p.sosRequest !== null
+      hasActiveSos: p.sosRequest !== null,
+      selectedChallenge: p.selectedChallenge,
+      challengesReleased
     });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -162,9 +175,55 @@ app.post('/api/feedback', async (req, res) => {
   }
 });
 
+// 7. Select Problem Statement
+app.post('/api/select-challenge', async (req, res) => {
+  try {
+    const { id, challengeId } = req.body;
+    const p = await Participant.findOne({ id });
+    if (!p) return res.status(404).json({ error: 'Participant not found' });
+    
+    let conf = await Config.findOne({ key: 'challengesReleased' });
+    if (!conf || !conf.value) {
+      return res.status(403).json({ error: 'Challenges are currently locked.' });
+    }
+
+    if (p.selectedChallenge) {
+      return res.status(400).json({ error: 'You have already selected a challenge.' });
+    }
+
+    p.selectedChallenge = challengeId;
+    await p.save();
+    res.json({ message: 'Challenge successfully selected!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // ==========================================
 // ORGANIZER ROUTES
 // ==========================================
+
+// Toggle Challenges Release Status
+app.post('/api/organizer/toggle-challenges', async (req, res) => {
+  try {
+    const { password, released } = req.body;
+    if (password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Incorrect Admin Password!' });
+    }
+
+    await Config.findOneAndUpdate(
+      { key: 'challengesReleased' },
+      { value: released },
+      { upsert: true }
+    );
+
+    res.json({ message: `Challenges ${released ? 'released' : 'locked'} successfully!` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // Get all stats
 app.get('/api/organizer/stats', async (req, res) => {
@@ -183,12 +242,16 @@ app.get('/api/organizer/stats', async (req, res) => {
     // Active SOS Alerts
     const sosAlerts = allParticipants.filter(p => p.sosRequest !== null && p.sosRequest.type); // ensure type exists
 
+    let conf = await Config.findOne({ key: 'challengesReleased' });
+    let challengesReleased = conf ? conf.value : false;
+
     const allTeams = allParticipants.map(p => ({
       id: p.id,
       teamName: p.teamName,
       phone: p.phone,
       track: p.track,
-      checkedIn: p.checkedIn
+      checkedIn: p.checkedIn,
+      selectedChallenge: p.selectedChallenge
     }));
 
     res.json({
@@ -198,7 +261,8 @@ app.get('/api/organizer/stats', async (req, res) => {
       processedExits,
       sosAlerts,
       allTeams,
-      feedbacks
+      feedbacks,
+      challengesReleased
     });
   } catch (err) {
     console.error(err);
