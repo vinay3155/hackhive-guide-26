@@ -33,6 +33,14 @@ const participantSchema = new mongoose.Schema({
 });
 const Participant = mongoose.model('Participant', participantSchema);
 
+const feedbackSchema = new mongoose.Schema({
+  teamName: String,
+  rating: Number, // 1 to 5
+  feedbackText: String,
+  timestamp: { type: Number, default: () => Date.now() }
+});
+const Feedback = mongoose.model('Feedback', feedbackSchema);
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Connected to MongoDB Atlas!'))
   .catch(err => console.error('❌ MongoDB Connection Error:', err));
@@ -131,6 +139,25 @@ app.get('/api/status/:id', async (req, res) => {
       hasActiveSos: p.sosRequest !== null
     });
   } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// 6. Submit Feedback
+app.post('/api/feedback', async (req, res) => {
+  try {
+    const { teamName, rating, feedbackText } = req.body;
+    if (!rating) return res.status(400).json({ error: 'Rating is required' });
+
+    await Feedback.create({
+      teamName: teamName || 'Anonymous',
+      rating,
+      feedbackText: feedbackText || ''
+    });
+
+    res.json({ message: 'Feedback submitted successfully!' });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 });

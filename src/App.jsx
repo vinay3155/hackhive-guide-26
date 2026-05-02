@@ -3,6 +3,7 @@ import WhereToGo from './components/sections/WhereToGo';
 import Schedule from './components/sections/Schedule';
 import Food from './components/sections/Food';
 import Rounds from './components/sections/Rounds';
+import Feedback from './components/sections/Feedback';
 import OrganizerDashboard from './pages/OrganizerDashboard';
 import './index.css';
 
@@ -212,6 +213,13 @@ export default function App() {
         </div>
       </div>
 
+      {/* ── MARQUEE ── */}
+      <div className="marquee-container">
+        <div className="marquee-content">
+          🚨 IMPORTANT NOTE: All participants must bring their college ID cards for verification! 🚨
+        </div>
+      </div>
+
       {/* ── HERO ── */}
       <div className="hero" style={{ paddingTop: '1.5rem' }}>
         <div className="hero-eyebrow">
@@ -358,6 +366,7 @@ export default function App() {
         <button className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`} onClick={() => setActiveTab('schedule')}>📅 Schedule</button>
         <button className={`tab-btn ${activeTab === 'food' ? 'active' : ''}`} onClick={() => setActiveTab('food')}>🍽 Food</button>
         <button className={`tab-btn ${activeTab === 'rounds' ? 'active' : ''}`} onClick={() => setActiveTab('rounds')}>🏆 Rounds</button>
+        <button className={`tab-btn ${activeTab === 'feedback' ? 'active' : ''}`} onClick={() => setActiveTab('feedback')}>⭐ Feedback</button>
       </div>
 
       {/* ── TAB CONTENT ── */}
@@ -366,6 +375,7 @@ export default function App() {
         {activeTab === 'schedule' && <Schedule now={now} />}
         {activeTab === 'food' && <Food now={now} />}
         {activeTab === 'rounds' && <Rounds now={now} />}
+        {activeTab === 'feedback' && <Feedback teamName={teamName} />}
       </div>
 
       {/* ── FOOTER ── */}
