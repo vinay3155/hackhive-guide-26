@@ -385,7 +385,7 @@ export default function App() {
       <footer style={{ 
         marginTop: '3rem', 
         padding: '2rem 1.5rem', 
-        background: "#0d1117", 
+        background: 'var(--bg)', 
         borderTop: '1px solid var(--rule)',
         display: 'flex', 
         justifyContent: 'space-between', 
