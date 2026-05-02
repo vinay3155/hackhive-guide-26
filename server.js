@@ -232,6 +232,25 @@ app.post('/api/organizer/resolve-sos', async (req, res) => {
   }
 });
 
+// Reset Entire Database
+app.post('/api/organizer/reset', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Incorrect Admin Password!' });
+    }
+
+    // Delete all records
+    await Participant.deleteMany({});
+    await Feedback.deleteMany({});
+
+    res.json({ message: 'Database successfully reset.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error during reset' });
+  }
+});
+
 // ==========================================
 // SERVE REACT FRONTEND IN PRODUCTION
 // ==========================================

@@ -204,6 +204,37 @@ export default function OrganizerDashboard() {
         </table>
       </div>
       
+      {/* DANGER ZONE */}
+      <div style={{ marginTop: '4rem', padding: '2rem', border: '2px dashed #EF4444', borderRadius: '12px', background: '#FEF2F2', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '20px', color: '#DC2626', marginBottom: '8px' }}>⚠️ DANGER ZONE ⚠️</h2>
+        <p style={{ color: '#991B1B', marginBottom: '16px', fontSize: '14px' }}>This will permanently delete ALL participants, check-ins, and feedback data. This cannot be undone.</p>
+        <button 
+          onClick={async () => {
+            const pwd = window.prompt("To wipe the database, enter the Admin Password:");
+            if (!pwd) return;
+            try {
+              const res = await fetch('/api/organizer/reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+              });
+              const data = await res.json();
+              if (res.ok) {
+                alert("Database successfully reset!");
+                fetchStats();
+              } else {
+                alert("Failed: " + data.error);
+              }
+            } catch (e) {
+              console.error(e);
+              alert("Server error.");
+            }
+          }}
+          style={{ background: '#DC2626', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
+          Reset Entire Database
+        </button>
+      </div>
+
       <style>{`
         @keyframes pulse {
           0% { opacity: 1; }
